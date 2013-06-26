@@ -43,6 +43,7 @@ public class mainView extends JFrame {
 	public static DefaultMutableTreeNode img = null;
 	public static DefaultMutableTreeNode study = null;
 	public static DefaultMutableTreeNode series = null;
+	public gaussPanel gPanel;
 	
 	public mainView(mainController mController) throws IOException{
 		setTitle("Przegladarka DICOM");
@@ -52,21 +53,42 @@ public class mainView extends JFrame {
 
 		JMenuBar menuBar=new JMenuBar();
 		JMenu menu = new JMenu("Plik");
+		JMenu submenu = new JMenu("Filtracja");
+		submenu.setMnemonic(KeyEvent.VK_S);
 		menuBar.add(menu);
 	
-
-		
 		JMenuItem menuItem1 = new JMenuItem("Otworz");
 		JMenuItem menuItem2 = new JMenuItem("Zamknij");
+		JMenuItem menuItem3 = new JMenuItem("Filtracja");
+		
+		JMenuItem menuItem4 = new JMenuItem("Wygladzanie Gaussowskie");
+		JMenuItem menuItem5 = new JMenuItem("Filtr Medianowy");
+		JMenuItem menuItem6 = new JMenuItem("Progowanie");
+		JMenuItem menuItem7 = new JMenuItem("Wyczysc");
 		
 		menuItem1.addActionListener(mController);
 		menuItem2.setAccelerator(KeyStroke.getKeyStroke( KeyEvent.VK_X, ActionEvent.CTRL_MASK));
 		menuItem2.addActionListener(mController);
+		menuItem3.addActionListener(mController);
+		menuItem4.addActionListener(mController);
+		menuItem5.addActionListener(mController);
+		menuItem6.addActionListener(mController);
+		menuItem7.addActionListener(mController);
 
 		menu.add(menuItem1);
+		menu.add(submenu);
 		menu.add(menuItem2);
+		
+		submenu.add(menuItem4);
+		submenu.add(menuItem5);
+		submenu.add(menuItem6);
+		submenu.add(menuItem7);
+		
 		setJMenuBar(menuBar);
 
+		gPanel = new gaussPanel(mController,this);
+			
+		
 		createUI();
 		add(splitPane);
         setVisible(true);

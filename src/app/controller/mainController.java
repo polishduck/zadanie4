@@ -48,6 +48,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 	public DicomObject dcm = null;
 	public JFileChooser fc = null;
 	public patientData pData;
+//	public gaussPanel gPanel;
 
 	public mainController() throws IOException {
 		myView = new mainView(this);
@@ -64,9 +65,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 		{
 			JMenuItem menuItem = ((JMenuItem)e.getSource());
 			String label = menuItem.getText();
-			
-			System.out.print(label);
-			
+
 			if(label.equals("Otworz")) {
 				System.out.print("Open call");
 				int returnVal = fc.showOpenDialog(myView);
@@ -99,7 +98,23 @@ public class mainController implements ActionListener, TreeSelectionListener {
 				}
 				mainView.updateUI(files,this);
 			}
-			
+			if(label.equals("Wygladzanie Gaussowskie")) {
+				System.out.println("Wygladzanie Gaussowskie");
+				
+				myView.gPanel.setVisible(true);
+				
+
+			}
+			if(label.equals("Filtr Medianowy")) {
+				System.out.println("Filtr Medianowy");
+			}
+			if(label.equals("Progowanie")) {
+				System.out.println("Progowanie");
+			}
+			if(label.equals("Wyczysc")) {
+				System.out.println("Wyczysc");
+			}
+						
 			if(label.equals("Zamknij")) {
 				System.exit(0);
 			}
