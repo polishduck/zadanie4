@@ -17,7 +17,10 @@ import sun.util.resources.CalendarData;
 @SuppressWarnings("serial")
 public class imagePanel extends JLabel{
 	
+	public Boolean hasImage;
+	
 	public imagePanel() {
+		this.hasImage = false;
 		Dimension minimumSize = new Dimension(100, 50);
 	    setMinimumSize(minimumSize);
 	

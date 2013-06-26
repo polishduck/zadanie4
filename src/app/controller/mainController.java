@@ -16,9 +16,11 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -48,7 +50,6 @@ public class mainController implements ActionListener, TreeSelectionListener {
 	public DicomObject dcm = null;
 	public JFileChooser fc = null;
 	public patientData pData;
-//	public gaussPanel gPanel;
 
 	public mainController() throws IOException {
 		myView = new mainView(this);
@@ -61,6 +62,22 @@ public class mainController implements ActionListener, TreeSelectionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		if (e.getSource() instanceof JButton) 
+		{
+			JButton btn = ((JButton)e.getSource());
+			String label = btn.getText();
+			
+			if(label.equals("OK")) {
+				System.out.print("pushed ok\n");
+				System.out.print("wartosc: " + myView.gPanel.getValue() + "\n");
+				myView.gPanel.setVisible(false);
+			}
+			if(label.equals("Anuluj")) {
+				System.out.print("pushed cancel\n");
+				myView.gPanel.setVisible(false);
+			}
+		}
+		
 		if (e.getSource() instanceof JMenuItem)
 		{
 			JMenuItem menuItem = ((JMenuItem)e.getSource());
@@ -101,10 +118,20 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			if(label.equals("Wygladzanie Gaussowskie")) {
 				System.out.println("Wygladzanie Gaussowskie");
 				
-				myView.gPanel.setVisible(true);
+				if (mainView.imagePanel.hasImage == true) {
+					System.out.println("Widac\n");
+					myView.gPanel.setVisible(true);
+				}
+					
+				else {
+					System.out.println("Pusty obraz\n");
+					JOptionPane.showMessageDialog(null,"Wczytaj obraz" ,"Brak Obrazu", JOptionPane.WARNING_MESSAGE);
+				}
+					
 				
 
 			}
+			
 			if(label.equals("Filtr Medianowy")) {
 				System.out.println("Filtr Medianowy");
 			}
@@ -184,7 +211,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-
+			mainView.imagePanel.hasImage = true;
 			Dimension d = mainView.imagePanel.getSize();
 			int width =(int) d.getWidth();
 			int height =(int) d.getHeight();

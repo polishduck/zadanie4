@@ -102,6 +102,7 @@ public class mainView extends JFrame {
 		tree.setRootVisible(false); // Sets everything invisible
 		
 	    imagePanel = new imagePanel();
+	    
 		//listScrollPane = new JScrollPane(list);
 	    listScrollPane = new listPanel(tree);
 	        
