@@ -4,15 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.text.NumberFormat;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -20,10 +17,10 @@ import javax.swing.JRadioButton;
 import app.controller.mainController;
 import app.view.mainView;
 
-public class gaussPanel extends JDialog{
+public class medianFilterPanel extends JDialog{
 	
     static private String []  kernelSizeString = {"3x3", "5x5", "9x9", "15x15"};
-    static private String label = "Wygladzanie Gaussowskie";
+    static private String label = "Filtr Medianowy";
  
     private String btnStringOk = "OK";
     private String btnStringCancel = "Anuluj";
@@ -36,30 +33,17 @@ public class gaussPanel extends JDialog{
     private JRadioButton rBtn3;
     private JRadioButton rBtn4;
     private ButtonGroup btnGroup;
-    
-    public JFormattedTextField sigmaField;
-    private NumberFormat sigmaFormat;
-    private float sigma;
-    private  JLabel sigmaLabel;
 	
-	public gaussPanel(mainController mController, mainView frame) {
+	public medianFilterPanel(mainController mController, mainView frame) {
 		super(frame, true);
 		setTitle(this.label);
-		setSize(300,180);
+		setSize(300,150);
 		
 		pane = this.getContentPane();
 		setLayout(null);
 		
 		btnOk = new JButton(btnStringOk);
 		btnCancel = new JButton(btnStringCancel);
-		
-		sigmaField = new JFormattedTextField(sigmaFormat);
-		sigmaField.setValue(new Float(sigma));
-		sigmaField.setColumns(10);
-		
-		sigmaLabel = new JLabel("Sigma");
-		sigmaLabel.setLabelFor(sigmaField);
-		
 				
 		btnOk.addActionListener(mController);
         btnCancel.addActionListener(mController);
@@ -85,11 +69,10 @@ public class gaussPanel extends JDialog{
         rBtn3.setBounds(147, 25, 50, 15);
         rBtn4.setBounds(213, 25, 60, 15);
        
-        sigmaField.setBounds(25, 75, 250, 50);
-        btnOk.setBounds(25,150,100,25);
-        btnCancel.setBounds(155,150,100,25);
         
-        pane.add(sigmaField);
+        btnOk.setBounds(25,75,100,25);
+        btnCancel.setBounds(155,75,100,25);
+        
         pane.add(rBtn1);
         pane.add(rBtn2);
         pane.add(rBtn3);
@@ -116,14 +99,6 @@ public class gaussPanel extends JDialog{
 			return 15;
 		return -1;
 		
-	}
-
-	public Container getPane() {
-		return this.pane;
-	}
-	
-	public float getSigma() {
-		return this.sigma;
 	}
 
 }

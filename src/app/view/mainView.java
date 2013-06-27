@@ -43,6 +43,7 @@ public class mainView extends JFrame {
 	public static DefaultMutableTreeNode img = null;
 	public static DefaultMutableTreeNode study = null;
 	public static DefaultMutableTreeNode series = null;
+	public thresholdPanel tPanel;
 	public gaussPanel gPanel;
 	
 	public mainView(mainController mController) throws IOException{
@@ -86,6 +87,7 @@ public class mainView extends JFrame {
 		
 		setJMenuBar(menuBar);
 
+		tPanel = new thresholdPanel(mController,this);
 		gPanel = new gaussPanel(mController,this);
 			
 		
@@ -156,6 +158,9 @@ public class mainView extends JFrame {
 				}
 				
 			}
+			
+			showDetails(dcm);
+			
 		
 			if (dcm.getString( Tag.PatientName) == null) {
 				names[ii] = "<unknown>#" + new Integer(ii).toString();
@@ -226,7 +231,7 @@ public class mainView extends JFrame {
 
 	}
 	@SuppressWarnings("unused")
-	private void showDetails(DicomObject dcm) {
+	private static void showDetails(DicomObject dcm) {
 		// TODO Auto-generated method stub
 		
 		System.out.println("Show Details\n");
@@ -266,6 +271,25 @@ public class mainView extends JFrame {
 		
 		String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
 		System.out.println("sopInstanceUID: " + sopInstanceUID + "\n\n");
+				
+		int samples = dcm.getInt( Tag.SamplesPerPixel);
+		System.out.println("-----SamplesPerPixel: " + samples);
+		
+		int pixelRepresentation = dcm.getInt(Tag.PixelRepresentation);
+		System.out.println("-----PixelRepresentation: " + pixelRepresentation);
+		
+		String photometricInterpretation = dcm.getString( Tag.PhotometricInterpretation);
+		System.out.println("-----PhotometricInterpretation: " + photometricInterpretation);
+		
+		int	columns = dcm.getInt( Tag.Columns);
+		System.out.println("-----Columns: " + columns);
+		
+		int	rows = dcm.getInt( Tag.Rows);
+		System.out.println("-----Rows: " + rows);
+		
+	//	byte [] pixelData = dcm.getBytes(Tag.PixelData);
+	//	System.out.println("-----PixelData: " + pixelData.length);
+		
 		
 	}
 

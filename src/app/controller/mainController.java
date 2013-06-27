@@ -5,6 +5,12 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ByteLookupTable;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+import java.awt.image.LookupOp;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,6 +56,10 @@ public class mainController implements ActionListener, TreeSelectionListener {
 	public DicomObject dcm = null;
 	public JFileChooser fc = null;
 	public patientData pData;
+	public BufferedImage image = null;
+	public Dimension d;
+	public int width;
+	public int height;
 
 	public mainController() throws IOException {
 		myView = new mainView(this);
@@ -67,14 +77,71 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			JButton btn = ((JButton)e.getSource());
 			String label = btn.getText();
 			
-			if(label.equals("OK")) {
-				System.out.print("pushed ok\n");
-				System.out.print("wartosc: " + myView.gPanel.getValue() + "\n");
-				myView.gPanel.setVisible(false);
+			if (btn.getParent() == myView.tPanel.getPane()) {
+				if(label.equals("OK")) {
+					System.out.print("pushed ok\n");
+					System.out.print("wartosc: " + myView.tPanel.getValue() + "\n");
+					int v = myView.tPanel.getValue();
+					byte[] data = new byte[dcm.getInt( Tag.Columns)];
+					for (int i = v; i<data.length;i++) {
+						data[i] = (byte) 255;
+					}
+
+					BufferedImageOp op = new LookupOp(new ByteLookupTable(0, data),null);
+					BufferedImage newImagexx = op.filter(image, null);
+
+					
+					BufferedImage newImage = mainView.imagePanel.scaleImage(newImagexx, width, height, null);
+					BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
+					ImageIcon icon = new ImageIcon(newImage2);
+					mainView.imagePanel.setIcon(icon);
+					myView.tPanel.setVisible(false);
+				}
+				if(label.equals("Anuluj")) {
+					System.out.print("pushed cancel\n");
+					myView.tPanel.setVisible(false);
+				}
 			}
-			if(label.equals("Anuluj")) {
-				System.out.print("pushed cancel\n");
-				myView.gPanel.setVisible(false);
+			if (btn.getParent() == myView.gPanel.getPane()) {
+				if(label.equals("OK")) {
+					System.out.print("gauss pushed ok\n");
+					System.out.print(2.0f);
+					System.out.print("wartosc: " + myView.gPanel.getValue() + "\n");
+					System.out.print("wartosc sigmny: " +myView.gPanel.sigmaField.getText());
+					int aa = myView.gPanel.getValue();
+					
+					float val = new Float(myView.gPanel.sigmaField.getText());
+					
+					float [] kernel = new float[aa*aa];
+					for (int ii=0; ii<kernel.length;ii++) {
+						kernel[ii] = 1.0f / val;
+					}
+					/*
+					float[] kernel = {(float) 0.00000067, (float) 0.00002292,(float) 0.00019117,(float) 0.00038771, (float)0.00019117, (float)0.00002292, (float)0.00000067,
+							(float)0.00002292,(float) 0.00078633,(float) 0.00655965,(float) 0.01330373,(float) 0.00655965,(float) 0.00078633, (float)0.00002292,
+							(float)0.00019117,(float) 0.00655965, (float)0.05472157,(float) 0.11098164,(float) 0.05472157,(float) 0.00655965, (float)0.00019117,
+							(float)0.00038771,(float) 0.01330373,(float) 0.11098164,(float) 0.22508352,(float) 0.11098164,(float) 0.01330373, (float)0.00038771,
+							(float)0.00019117,(float) 0.00655965,(float) 0.05472157,(float) 0.11098164,(float) 0.05472157,(float) 0.00655965, (float)0.00019117,
+							(float)0.00002292,(float) 0.00078633,(float) 0.00655965,(float) 0.01330373,(float) 0.00655965,(float) 0.00078633,(float) 0.00002292,
+							(float)0.00000067,(float) 0.00002292,(float) 0.00019117,(float) 0.00038771, (float)0.00019117,(float) 0.00002292,(float)0.00000067
+						};
+					*/
+					BufferedImageOp op = new ConvolveOp(new Kernel(aa,aa,kernel),ConvolveOp.EDGE_NO_OP,null);
+					BufferedImage newImagexx = op.filter(image, null);
+
+					
+					BufferedImage newImage = mainView.imagePanel.scaleImage(newImagexx, width, height, null);
+					BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
+					ImageIcon icon = new ImageIcon(newImage2);
+					mainView.imagePanel.setIcon(icon);
+									
+					myView.gPanel.setVisible(false);
+				}
+				if(label.equals("Anuluj")) {
+					System.out.print("pushed cancel\n");
+					myView.gPanel.setVisible(false);
+					
+				}
 			}
 		}
 		
@@ -117,19 +184,14 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			}
 			if(label.equals("Wygladzanie Gaussowskie")) {
 				System.out.println("Wygladzanie Gaussowskie");
-				
 				if (mainView.imagePanel.hasImage == true) {
 					System.out.println("Widac\n");
 					myView.gPanel.setVisible(true);
 				}
-					
 				else {
 					System.out.println("Pusty obraz\n");
 					JOptionPane.showMessageDialog(null,"Wczytaj obraz" ,"Brak Obrazu", JOptionPane.WARNING_MESSAGE);
 				}
-					
-				
-
 			}
 			
 			if(label.equals("Filtr Medianowy")) {
@@ -137,9 +199,22 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			}
 			if(label.equals("Progowanie")) {
 				System.out.println("Progowanie");
+				if (mainView.imagePanel.hasImage == true) {
+					System.out.println("Widac\n");
+					myView.tPanel.setMax(dcm.getInt( Tag.Columns));
+					myView.tPanel.setVisible(true);
+				}
+				else {
+					System.out.println("Pusty obraz\n");
+					JOptionPane.showMessageDialog(null,"Wczytaj obraz" ,"Brak Obrazu", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			if(label.equals("Wyczysc")) {
 				System.out.println("Wyczysc");
+				BufferedImage newImage = mainView.imagePanel.scaleImage(image, width, height, null);
+				BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
+				ImageIcon iconxx = new ImageIcon(newImage2);
+				mainView.imagePanel.setIcon(iconxx);
 			}
 						
 			if(label.equals("Zamknij")) {
@@ -185,6 +260,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 				
 			}
 			
+			
 			String name = dcm.getString( Tag.PatientName);
 			Date birth = dcm.getDate(Tag.PatientBirthDate);
 			Calendar date_birth = Calendar.getInstance();
@@ -199,7 +275,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			pData = new patientData(name, date_birth, study_type);
 			
 			FileImageInputStream fiis;
-			BufferedImage image = null;
+			
 			
 			try {
 				fiis = new FileImageInputStream(new File(files[index].getAbsolutePath()));
@@ -212,9 +288,9 @@ public class mainController implements ActionListener, TreeSelectionListener {
 				e2.printStackTrace();
 			}
 			mainView.imagePanel.hasImage = true;
-			Dimension d = mainView.imagePanel.getSize();
-			int width =(int) d.getWidth();
-			int height =(int) d.getHeight();
+			d = mainView.imagePanel.getSize();
+			width =(int) d.getWidth();
+			height =(int) d.getHeight();
 			System.out.println("wymiar okna:" + width + "x" +height);
 			BufferedImage newImage = mainView.imagePanel.scaleImage(image, width, height, null);
 			BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
