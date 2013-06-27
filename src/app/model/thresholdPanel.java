@@ -1,24 +1,15 @@
 package app.model;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 
 import app.controller.mainController;
 import app.view.mainView;
 
+@SuppressWarnings("serial")
 public class thresholdPanel extends JDialog{
 	
     static private String []  kernelSizeString = {"3x3", "5x5", "9x9", "15x15"};
@@ -36,7 +27,7 @@ public class thresholdPanel extends JDialog{
 	
 	public thresholdPanel(mainController mController, mainView frame) {
 		super(frame, true);
-		setTitle(this.label);
+		setTitle(thresholdPanel.label);
 		setSize(300,150);
 		
 		pane = this.getContentPane();
@@ -59,8 +50,6 @@ public class thresholdPanel extends JDialog{
         btnOk.setVisible(true);
         btnCancel.setVisible(true);
         
-        Dimension n = pane.getSize();
-        
         thresholdValue.setBounds(25, 25, 200, 50);
         btnOk.setBounds(25,75,100,25);
         btnCancel.setBounds(155,75,100,25);
@@ -82,7 +71,7 @@ public class thresholdPanel extends JDialog{
 	
 	
 	public String getOpnion(int value) {
-		return this.kernelSizeString[value];
+		return thresholdPanel.kernelSizeString[value];
 	}
 	
 	public int getValue() {

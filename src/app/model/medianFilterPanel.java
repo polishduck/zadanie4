@@ -1,26 +1,20 @@
 package app.model;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import app.controller.mainController;
 import app.view.mainView;
 
+@SuppressWarnings("serial")
 public class medianFilterPanel extends JDialog{
 	
-    static private String []  kernelSizeString = {"3x3", "5x5", "9x9", "15x15"};
-    static private String label = "Filtr Medianowy";
+    private String []  kernelSizeString = {"3x3", "5x5", "9x9", "15x15"};
+    private String label = "Filtr Medianowy";
  
     private String btnStringOk = "OK";
     private String btnStringCancel = "Anuluj";
@@ -99,6 +93,11 @@ public class medianFilterPanel extends JDialog{
 			return 15;
 		return -1;
 		
+	}
+
+	public Container getPane() {
+		// TODO Auto-generated method stub
+		return this.pane;
 	}
 
 }

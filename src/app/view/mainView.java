@@ -45,6 +45,7 @@ public class mainView extends JFrame {
 	public static DefaultMutableTreeNode series = null;
 	public thresholdPanel tPanel;
 	public gaussPanel gPanel;
+	public medianFilterPanel mPanel;
 	
 	public mainView(mainController mController) throws IOException{
 		setTitle("Przegladarka DICOM");
@@ -89,7 +90,7 @@ public class mainView extends JFrame {
 
 		tPanel = new thresholdPanel(mController,this);
 		gPanel = new gaussPanel(mController,this);
-			
+		mPanel = new medianFilterPanel(mController, this);
 		
 		createUI();
 		add(splitPane);
@@ -230,7 +231,6 @@ public class mainView extends JFrame {
 	    }
 
 	}
-	@SuppressWarnings("unused")
 	private static void showDetails(DicomObject dcm) {
 		// TODO Auto-generated method stub
 		

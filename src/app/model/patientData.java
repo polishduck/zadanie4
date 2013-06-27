@@ -1,9 +1,6 @@
 package app.model;
 
 import java.util.Calendar;
-import java.util.Date;
-
-import sun.util.resources.CalendarData;
 
 public class patientData {
 

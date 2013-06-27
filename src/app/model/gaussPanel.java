@@ -1,25 +1,20 @@
 package app.model;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
 
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import app.controller.mainController;
 import app.view.mainView;
 
+@SuppressWarnings("serial")
 public class gaussPanel extends JDialog{
 	
     static private String []  kernelSizeString = {"3x3", "5x5", "9x9", "15x15"};
@@ -44,7 +39,7 @@ public class gaussPanel extends JDialog{
 	
 	public gaussPanel(mainController mController, mainView frame) {
 		super(frame, true);
-		setTitle(this.label);
+		setTitle(gaussPanel.label);
 		setSize(300,180);
 		
 		pane = this.getContentPane();
@@ -102,7 +97,7 @@ public class gaussPanel extends JDialog{
 	}
 	
 	public String getOpnion(int value) {
-		return this.kernelSizeString[value];
+		return gaussPanel.kernelSizeString[value];
 	}
 	
 	public int getValue() {

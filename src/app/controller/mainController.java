@@ -1,6 +1,5 @@
 package app.controller;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +9,6 @@ import java.awt.image.ByteLookupTable;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.LookupOp;
-import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,31 +17,20 @@ import java.util.Date;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-
 import org.dcm4che2.data.DicomElement;
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
-import org.dcm4che2.imageioimpl.plugins.dcm.DicomImageReader;
 import org.dcm4che2.io.DicomInputStream;
-import org.dcm4che2.tool.jpg2dcm.Jpg2Dcm;
 import org.dcm4che2.util.CloseUtils;
-
-import sun.util.resources.CalendarData;
-
 
 import app.view.*;
 import app.model.*;
@@ -76,6 +63,29 @@ public class mainController implements ActionListener, TreeSelectionListener {
 		{
 			JButton btn = ((JButton)e.getSource());
 			String label = btn.getText();
+			
+			if (btn.getParent() == myView.mPanel.getPane()) {
+				if(label.equals("OK")) {
+					System.out.print("pushed ok\n");
+					System.out.print("wartosc: " + myView.mPanel.getValue() + "\n");
+					
+					MedianFilter f = new MedianFilter(myView.mPanel.getValue());
+					BufferedImage dstImage = null;
+					dstImage = f.filter(image);
+					
+					BufferedImage newImage = mainView.imagePanel.scaleImage(dstImage, width, height, null);
+					BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
+					ImageIcon icon = new ImageIcon(newImage2);
+					mainView.imagePanel.setIcon(icon);
+					myView.mPanel.setVisible(false);
+				}
+				if(label.equals("Anuluj")) {
+					System.out.print("pushed cancel\n");
+					myView.mPanel.setVisible(false);
+				}
+				
+			}
+			
 			
 			if (btn.getParent() == myView.tPanel.getPane()) {
 				if(label.equals("OK")) {
@@ -196,6 +206,14 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			
 			if(label.equals("Filtr Medianowy")) {
 				System.out.println("Filtr Medianowy");
+				if (mainView.imagePanel.hasImage == true) {
+					System.out.println("Widac\n");
+					myView.mPanel.setVisible(true);
+				}
+				else {
+					System.out.println("Pusty obraz\n");
+					JOptionPane.showMessageDialog(null,"Wczytaj obraz" ,"Brak Obrazu", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			if(label.equals("Progowanie")) {
 				System.out.println("Progowanie");
@@ -224,6 +242,7 @@ public class mainController implements ActionListener, TreeSelectionListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		// TODO Auto-generated method stub
