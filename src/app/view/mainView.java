@@ -46,8 +46,10 @@ public class mainView extends JFrame {
 	public thresholdPanel tPanel;
 	public gaussPanel gPanel;
 	public medianFilterPanel mPanel;
+	public mainController mc;
 	
 	public mainView(mainController mController) throws IOException{
+		mc = mController;
 		setTitle("Przegladarka DICOM");
 		setBackground(Color.white);
 		setSize(800,600);
@@ -104,7 +106,7 @@ public class mainView extends JFrame {
 		tree = new JTree(treeModel);
 		tree.setRootVisible(false); // Sets everything invisible
 		
-	    imagePanel = new imagePanel();
+	    imagePanel = new imagePanel(mc);
 	    
 		//listScrollPane = new JScrollPane(list);
 	    listScrollPane = new listPanel(tree);

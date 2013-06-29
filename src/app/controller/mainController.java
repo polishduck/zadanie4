@@ -3,12 +3,16 @@ package app.controller;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ByteLookupTable;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.LookupOp;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,7 +39,7 @@ import org.dcm4che2.util.CloseUtils;
 import app.view.*;
 import app.model.*;
 
-public class mainController implements ActionListener, TreeSelectionListener {
+public class mainController implements ActionListener, TreeSelectionListener, MouseListener, MouseMotionListener {
 	
 	private mainView myView;
 	public File[] files;
@@ -47,6 +51,9 @@ public class mainController implements ActionListener, TreeSelectionListener {
 	public Dimension d;
 	public int width;
 	public int height;
+	public boolean drag = false;
+	public int mouseX = 0;
+	public int mouseY = 0;
 
 	public mainController() throws IOException {
 		myView = new mainView(this);
@@ -126,16 +133,6 @@ public class mainController implements ActionListener, TreeSelectionListener {
 					for (int ii=0; ii<kernel.length;ii++) {
 						kernel[ii] = 1.0f / val;
 					}
-					/*
-					float[] kernel = {(float) 0.00000067, (float) 0.00002292,(float) 0.00019117,(float) 0.00038771, (float)0.00019117, (float)0.00002292, (float)0.00000067,
-							(float)0.00002292,(float) 0.00078633,(float) 0.00655965,(float) 0.01330373,(float) 0.00655965,(float) 0.00078633, (float)0.00002292,
-							(float)0.00019117,(float) 0.00655965, (float)0.05472157,(float) 0.11098164,(float) 0.05472157,(float) 0.00655965, (float)0.00019117,
-							(float)0.00038771,(float) 0.01330373,(float) 0.11098164,(float) 0.22508352,(float) 0.11098164,(float) 0.01330373, (float)0.00038771,
-							(float)0.00019117,(float) 0.00655965,(float) 0.05472157,(float) 0.11098164,(float) 0.05472157,(float) 0.00655965, (float)0.00019117,
-							(float)0.00002292,(float) 0.00078633,(float) 0.00655965,(float) 0.01330373,(float) 0.00655965,(float) 0.00078633,(float) 0.00002292,
-							(float)0.00000067,(float) 0.00002292,(float) 0.00019117,(float) 0.00038771, (float)0.00019117,(float) 0.00002292,(float)0.00000067
-						};
-					*/
 					BufferedImageOp op = new ConvolveOp(new Kernel(aa,aa,kernel),ConvolveOp.EDGE_NO_OP,null);
 					BufferedImage newImagexx = op.filter(image, null);
 
@@ -317,6 +314,39 @@ public class mainController implements ActionListener, TreeSelectionListener {
 			mainView.imagePanel.setIcon(icon);
 
 		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+	    if (drag == true) {
+	        mouseX = e.getX();
+	        mouseY = e.getY();
+	        
+	    }
+	    contrastChange(image,mouseX, mouseY);
+	    System.out.println("drag:" + mouseX + "x" + mouseY + "\n");
+	}
+	
+	private void contrastChange(BufferedImage image2, int mouseX2, int mouseY2) {
+		BufferedImageOp op = new RescaleOp(mouseX2/100, mouseY2/100, null);
+		BufferedImage dest = op.filter(image,null);
+		BufferedImage newImage = mainView.imagePanel.scaleImage(dest, width, height, null);
+		BufferedImage newImage2 = mainView.imagePanel.process(newImage, pData);
+		ImageIcon icon = new ImageIcon(newImage2);
+		mainView.imagePanel.setIcon(icon);
+		
+	}
+
+	public void mouseMoved(MouseEvent arg0) {}
+	public void mouseClicked(MouseEvent arg0) {}
+	public void mouseEntered(MouseEvent arg0) {}
+	public void mouseExited(MouseEvent arg0) {}
+	public void mousePressed(MouseEvent e) {
+		drag = true;
+	}
+	public void mouseReleased(MouseEvent e) {
+		drag = false;
 	}
 
 }
