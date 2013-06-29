@@ -5,8 +5,9 @@ import java.util.Calendar;
 public class patientData {
 
 	private String fullname;
-	private String name;
-	private String surname;
+	//for split name 
+//	private String name;
+//	private String surname;
 	private Calendar birth;
 	private String modality;
 
